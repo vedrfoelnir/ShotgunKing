@@ -14,6 +14,9 @@ public class GameStateManager : Singleton<GameStateManager>
     // Dependencies
     public GameSetupManager gameSetup;
     public GameUnitManager unitManager;
+    public GameObject player;
+    public PlayerMovement playerBehaviour;
+
 
     //Variables
     public GameState State { get; private set; }
@@ -23,7 +26,10 @@ public class GameStateManager : Singleton<GameStateManager>
         "rnbqkbnr/8/8/8/8/8/8/8/"
     };
 
-    void Start() => ChangeState(GameState.Starting);
+    void Start()
+    {
+        ChangeState(GameState.Starting);
+    }
 
     public void ChangeState(GameState newState)
     {
@@ -71,9 +77,9 @@ public class GameStateManager : Singleton<GameStateManager>
 
     private void HandlePlayerInit()
     {
-        gameSetup.SpawnPlayer(2, 4);
+        player = gameSetup.SpawnPlayer(2, 4);
+        playerBehaviour = player.GetComponent<PlayerMovement>();
         ChangeState(GameState.InitOpponent);
-
     }
 
     private void HandleOpponentInit()
@@ -87,8 +93,9 @@ public class GameStateManager : Singleton<GameStateManager>
     private void HandlePlayerTurn()
     {
         Debug.Log("Player Action");
-        Debug.Log("Player: " + unitManager.player); 
-        //unitManager.player.GetComponent<PlayerMovement>().TurnGreenAndWaitForInputToMove();
+        Debug.Log("Player: " + player);
+        Debug.Log("Player Movement: " + playerBehaviour);
+        playerBehaviour.TurnGreenAndWaitForInputToMove();
     }
 
     private void HandleOpponenTurn()

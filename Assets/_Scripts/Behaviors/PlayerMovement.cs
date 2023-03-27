@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void TurnGreenAndWaitForInputToMove()
     {
+        Debug.Log("Waiting for Movement");
         // Change the color of the GameObject to green
         GetComponent<Renderer>().material.color = Color.green;
 
@@ -25,43 +26,35 @@ public class PlayerMovement : MonoBehaviour
         
         if (isWaitingForInput)
         {
-            // Check for input to trigger the move action
+            Vector3 moveDirection = Vector3.zero;
+
             if (Input.GetKeyDown(KeyCode.W))
             {
-                // Move up
-                transform.position += Vector3.up * 3.5f;
-                // Reset the color of the GameObject
-                GetComponent<Renderer>().material.color = originalColor;
-                // Reset the flag
-                isWaitingForInput = false;
+                moveDirection = Vector3.forward;
             }
             else if (Input.GetKeyDown(KeyCode.A))
             {
-                // Move left
-                transform.position += Vector3.left * 3.5f;
-                // Reset the color of the GameObject
-                GetComponent<Renderer>().material.color = originalColor;
-                // Reset the flag
-                isWaitingForInput = false;
+                moveDirection = Vector3.left;
             }
             else if (Input.GetKeyDown(KeyCode.S))
             {
-                // Move down
-                transform.position += Vector3.down * 3.5f;
-                // Reset the color of the GameObject
-                GetComponent<Renderer>().material.color = originalColor;
-                // Reset the flag
-                isWaitingForInput = false;
+                moveDirection = Vector3.back;
             }
             else if (Input.GetKeyDown(KeyCode.D))
             {
-                // Move right
-                transform.position += Vector3.right * 3.5f;
+                moveDirection = Vector3.right;
+            }
+
+            if (moveDirection != Vector3.zero)
+            {
+                // Move the GameObject
+                transform.position += moveDirection * 3.5f;
                 // Reset the color of the GameObject
                 GetComponent<Renderer>().material.color = originalColor;
                 // Reset the flag
                 isWaitingForInput = false;
             }
+
         }
     }
 

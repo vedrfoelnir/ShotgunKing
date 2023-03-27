@@ -71,10 +71,11 @@ public class GameSetupManager : Singleton<GameSetupManager>
         }
     }
 
-    public void SpawnPlayer(int rank, int file)
+    public GameObject SpawnPlayer(int rank, int file)
 {
     player = Instantiate(playerModel, new Vector3((file-1) * scalingFactor, 1.5f, (rank-1) * scalingFactor), Quaternion.identity);
     unitManager.AddUnit(player, rank, file);
+    return player;
 }
 
 public void SetupLevelFromFEN(string fenstr)
