@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameUnitManager : SingletonPersistent<GameUnitManager>
+public class GameUnitManager : Singleton<GameUnitManager>
 {
     [HideInInspector]
     public GameObject player { get; set; }
@@ -19,6 +19,7 @@ public class GameUnitManager : SingletonPersistent<GameUnitManager>
         if (unit.CompareTag("Player"))
         {
             player = unit;
+            Debug.Log("Player is: " + unit);
         }
         else if (unit.CompareTag("Enemy"))
         {
@@ -31,7 +32,7 @@ public class GameUnitManager : SingletonPersistent<GameUnitManager>
         }
         else
         {
-            Debug.LogError("Duplicate unit position detected!");
+            Debug.LogError("Duplicate unit position detected at: " + rank + ", " + file + "; GameUnit: " + gameUnits[(rank, file)]);
         }
     }
 

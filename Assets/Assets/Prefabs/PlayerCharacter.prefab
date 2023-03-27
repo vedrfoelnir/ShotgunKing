@@ -111,5 +111,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee0b5d96510e6457c9b193a729d1a530, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrowPrefab: {fileID: 3601999258359771890, guid: fcd247b1ceee54bc79da197de07e7651,
-    type: 3}
+  moveSpeed: 3.5

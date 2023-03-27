@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameSetupManager : SingletonPersistent<GameSetupManager>
+public class GameSetupManager : Singleton<GameSetupManager>
 {
 
     // Dependencies
     private GameUnitManager unitManager;
 
-    const float gameSize = 3.0f;
+    const float scalingFactor = 3.0f;
 
     [SerializeField]
     private GameObject platFormPrefab;
@@ -41,7 +41,7 @@ public class GameSetupManager : SingletonPersistent<GameSetupManager>
 
     public void CameraSetup()
     {
-        mainCamera.transform.position = new Vector3(gameSize * 3.5f, 40f, gameSize * 2.73f);
+        mainCamera.transform.position = new Vector3(scalingFactor * 3.5f, 40f, scalingFactor * 2.73f);
         mainCamera.transform.rotation = new Quaternion(0.688228011f, 0, 0, 0.725494504f);
         mainCamera.fieldOfView = 33.7f;
     }
@@ -55,7 +55,7 @@ public class GameSetupManager : SingletonPersistent<GameSetupManager>
 
             for (int file = 0; file < 8; file++)
             {
-                var plt = Instantiate(platFormPrefab, new Vector3(gameSize * file, 0, gameSize * rank), Quaternion.identity);
+                var plt = Instantiate(platFormPrefab, new Vector3(scalingFactor * file, 0, scalingFactor * rank), Quaternion.identity);
 
                 if (!isBlackTile)
                 {
@@ -73,7 +73,7 @@ public class GameSetupManager : SingletonPersistent<GameSetupManager>
 
     public void SpawnPlayer(int rank, int file)
 {
-    player = Instantiate(playerModel, new Vector3(file * gameSize, 1.5f, (7 - rank) * gameSize), Quaternion.identity);
+    player = Instantiate(playerModel, new Vector3((file-1) * scalingFactor, 1.5f, (rank-1) * scalingFactor), Quaternion.identity);
     unitManager.AddUnit(player, rank, file);
 }
 
@@ -114,9 +114,10 @@ public void SetupLevelFromFEN(string fenstr)
         }
         else if (pieceMap.ContainsKey(input))
         {
+            
             var (prefab, value) = pieceMap[input];
-            GameObject unit = Instantiate(prefab, new Vector3(file * gameSize, 0, (7 - rank) * gameSize), Quaternion.identity);
-            unitManager.AddUnit(unit, rank, file);
+            GameObject unit = Instantiate(prefab, new Vector3(file * scalingFactor, 0, (7 - rank) * scalingFactor), Quaternion.identity);
+            unitManager.AddUnit(unit, (7 - rank), file);
             file++;
         }
         else

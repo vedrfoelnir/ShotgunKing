@@ -1,63 +1,66 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
 public class PlayerMovement : MonoBehaviour
 {
-    public GameObject arrowPrefab; // Reference to the arrow prefab
+    private Color originalColor;
+    private bool isWaitingForInput = false;
 
-    private GameObject arrow; // Reference to the arrow game object
-    private bool isWaitingForInput = true; // Flag to indicate whether the player is currently waiting for input
+    // Start is called before the first frame update
+    void Start() => originalColor = GetComponent<Renderer>().material.color;
+
+    public void TurnGreenAndWaitForInputToMove()
+    {
+        // Change the color of the GameObject to green
+        GetComponent<Renderer>().material.color = Color.green;
+
+        // Set the flag to indicate that we are waiting for input to move
+        isWaitingForInput = true;
+    }
 
     // Update is called once per frame
+
     void Update()
     {
+        
         if (isWaitingForInput)
         {
-            // Get the mouse position in screen space
-            Vector3 mousePosition = Input.mousePosition;
-
-            // Convert the mouse position to world space
-            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-
-            // Get the direction from the game object to the mouse position
-            Vector3 direction = mouseWorldPosition - transform.position;
-
-            // Rotate the game object to face the mouse cursor
-            transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
-
-            // If the arrow game object doesn't exist, create it
-            if (arrow == null)
-            { 
-                arrow = Instantiate(arrowPrefab, transform.position, Quaternion.identity);
-            }
-
-            // Set the arrow's position and rotation
-            arrow.transform.position = transform.position + direction.normalized * 2f; // Offset arrow position from player
-            arrow.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
-
-            // Show/hide the arrow based on whether the mouse cursor is pointing at an enemy
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, Mathf.Infinity, LayerMask.GetMask("Enemy"));
-            arrow.SetActive(hit.collider != null);
-
-            // Check for input to trigger an action
-            if (Input.GetMouseButtonDown(0))
+            // Check for input to trigger the move action
+            if (Input.GetKeyDown(KeyCode.W))
             {
-                Debug.Log(arrow.ToString());
+                // Move up
+                transform.position += Vector3.up * 3.5f;
+                // Reset the color of the GameObject
+                GetComponent<Renderer>().material.color = originalColor;
+                // Reset the flag
                 isWaitingForInput = false;
-                StartCoroutine(WaitForMoveAction());
             }
-            else if (Input.GetMouseButtonDown(1))
+            else if (Input.GetKeyDown(KeyCode.A))
             {
-                // Shoot action
+                // Move left
+                transform.position += Vector3.left * 3.5f;
+                // Reset the color of the GameObject
+                GetComponent<Renderer>().material.color = originalColor;
+                // Reset the flag
                 isWaitingForInput = false;
-                StartCoroutine(WaitForShootAction());
             }
-            else if (Input.GetKeyDown(KeyCode.Space))
+            else if (Input.GetKeyDown(KeyCode.S))
             {
-                // Special action
+                // Move down
+                transform.position += Vector3.down * 3.5f;
+                // Reset the color of the GameObject
+                GetComponent<Renderer>().material.color = originalColor;
+                // Reset the flag
                 isWaitingForInput = false;
-                StartCoroutine(WaitForSpecialAction());
+            }
+            else if (Input.GetKeyDown(KeyCode.D))
+            {
+                // Move right
+                transform.position += Vector3.right * 3.5f;
+                // Reset the color of the GameObject
+                GetComponent<Renderer>().material.color = originalColor;
+                // Reset the flag
+                isWaitingForInput = false;
             }
         }
     }
@@ -70,7 +73,32 @@ public class PlayerMovement : MonoBehaviour
             // Check for input to trigger the move action
             if (Input.GetMouseButtonDown(0))
             {
-                // TODO: Implement the move action
+                Vector3 direction = Vector3.zero;
+
+                // Set the direction based on the WASD keys pressed
+                if (Input.GetKeyDown(KeyCode.W))
+                {
+                    direction = Vector3.forward;
+                }
+                else if (Input.GetKeyDown(KeyCode.S))
+                {
+                    direction = Vector3.back;
+                }
+                else if (Input.GetKeyDown(KeyCode.A))
+                {
+                    direction = Vector3.left;
+                }
+                else if (Input.GetKeyDown(KeyCode.D))
+                {
+                    direction = Vector3.right;
+                }
+
+                // Move the player in the indicated direction
+                if (direction != Vector3.zero)
+                {
+                    transform.position += direction * 3.5f;
+                }
+
                 isWaitingForInput = true;
                 yield break;
             }
@@ -113,3 +141,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 }
+
+/**
+    // Get the mouse position in screen space
+    Vector3 mousePosition = Input.mousePosition;
+    // Convert the mouse position to world space
+    Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+    // Get the direction from the game object to the mouse position
+    Vector3 direction = mouseWorldPosition - transform.position;
+    // Rotate the game object to face the mouse cursor
+    transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+ */

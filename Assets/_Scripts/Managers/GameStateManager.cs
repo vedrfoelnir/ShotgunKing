@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class GameStateManager : Singleton<GameStateManager>
 {
@@ -70,7 +71,7 @@ public class GameStateManager : Singleton<GameStateManager>
 
     private void HandlePlayerInit()
     {
-        gameSetup.SpawnPlayer();
+        gameSetup.SpawnPlayer(2, 4);
         ChangeState(GameState.InitOpponent);
 
     }
@@ -80,12 +81,14 @@ public class GameStateManager : Singleton<GameStateManager>
         string level = Levels[currentLevelIndex];
         gameSetup.SetupLevelFromFEN(level);
         currentLevelIndex = (currentLevelIndex + 1) % Levels.Count;
+        ChangeState(GameState.TurnPlayer);
     }
-
 
     private void HandlePlayerTurn()
     {
-        throw new NotImplementedException();
+        Debug.Log("Player Action");
+        Debug.Log("Player: " + unitManager.player); 
+        //unitManager.player.GetComponent<PlayerMovement>().TurnGreenAndWaitForInputToMove();
     }
 
     private void HandleOpponenTurn()

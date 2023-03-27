@@ -14,6 +14,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     }
 }
 
+/**
 public abstract class SingletonPersistent<T> : Singleton<T> where T : MonoBehaviour
 {
     protected override void Awake()
@@ -22,4 +23,4 @@ public abstract class SingletonPersistent<T> : Singleton<T> where T : MonoBehavi
         DontDestroyOnLoad(gameObject);
         base.Awake();
     }
-}
+}*/
