@@ -34,8 +34,6 @@ public class GameSetupManager : SingletonPersistent<GameSetupManager>
     public Camera mainCamera;
     private bool isBlackTile;
 
-    public int[,] board = new int[8, 8];
-
     private void Start()
     {
         unitManager = GameUnitManager.Instance;
@@ -73,60 +71,60 @@ public class GameSetupManager : SingletonPersistent<GameSetupManager>
         }
     }
 
-    public void SpawnPlayer()
+    public void SpawnPlayer(int rank, int file)
+{
+    player = Instantiate(playerModel, new Vector3(file * gameSize, 1.5f, (7 - rank) * gameSize), Quaternion.identity);
+    unitManager.AddUnit(player, rank, file);
+}
+
+public void SetupLevelFromFEN(string fenstr)
+{
+    if (string.IsNullOrEmpty(fenstr))
     {
-        player = Instantiate(playerModel, new Vector3(4 * gameSize, 1.5f, 3 * gameSize), Quaternion.identity);
-        unitManager.player = player;
+        throw new ArgumentException("FEN string input is invalid.");
     }
 
-    public void SetupLevelFromFEN(string fenstr)
+    Dictionary<char, (GameObject prefab, int id)> pieceMap = new Dictionary<char, (GameObject, int)>()
     {
-        if (string.IsNullOrEmpty(fenstr))
+        {'p', (enemyPawn, 1)},
+        {'n', (enemyKnight, 3)},
+        {'b', (enemyBishop, 3)},
+        {'r', (enemyRook, 5)},
+        {'q', (enemyQueen, 9)}
+    };
+
+    int rank = 0;
+    int file = 0;
+
+    foreach (char input in fenstr)
+    {
+        if (rank >= 8)
+        {
+            break;
+        }
+
+        if (input == '/')
+        {
+            rank++;
+            file = 0;
+        }
+        else if (char.IsDigit(input))
+        {
+            file += (input - '0');
+        }
+        else if (pieceMap.ContainsKey(input))
+        {
+            var (prefab, value) = pieceMap[input];
+            GameObject unit = Instantiate(prefab, new Vector3(file * gameSize, 0, (7 - rank) * gameSize), Quaternion.identity);
+            unitManager.AddUnit(unit, rank, file);
+            file++;
+        }
+        else
         {
             throw new ArgumentException("FEN string input is invalid.");
         }
-
-        Dictionary<char, (GameObject prefab, int id)> pieceMap = new Dictionary<char, (GameObject, int)>()
-        {
-            {'p', (enemyPawn, 2)},
-            {'n', (enemyKnight, 3)},
-            {'b', (enemyBishop, 4)},
-            {'r', (enemyRook, 5)},
-            {'q', (enemyQueen, 6)}
-        };
-
-        int rank = 0;
-        int file = 0;
-
-        foreach (char input in fenstr)
-        {
-            if (rank >= 8)
-            {
-                break;
-            }
-
-            if (input == '/')
-            {
-                rank++;
-                file = 0;
-            }
-            else if (char.IsDigit(input))
-            {
-                file += (input - '0');
-            }
-            else if (pieceMap.ContainsKey(input))
-            {
-                var (prefab, id) = pieceMap[input];
-                GameObject unit = Instantiate(prefab, new Vector3(file * gameSize, 0, (7 - rank) * gameSize), Quaternion.identity);
-                board[rank, file] = id;
-                file++;
-                unitManager.AddUnit(unit);
-            }
-            else
-            {
-                throw new ArgumentException("FEN string input is invalid.");
-            }
-        }
     }
+}
+
 
 }
