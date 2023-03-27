@@ -1,66 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : Singleton<PlayerMovement>
 {
     private Color originalColor;
     private bool isWaitingForInput = false;
 
-    // Start is called before the first frame update
     void Start() => originalColor = GetComponent<Renderer>().material.color;
+
 
     public void TurnGreenAndWaitForInputToMove()
     {
         Debug.Log("Waiting for Movement");
         // Change the color of the GameObject to green
         GetComponent<Renderer>().material.color = Color.green;
-
-        // Set the flag to indicate that we are waiting for input to move
         isWaitingForInput = true;
     }
-
-    // Update is called once per frame
 
     void Update()
     {
         
         if (isWaitingForInput)
         {
-            Vector3 moveDirection = Vector3.zero;
-
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                moveDirection = Vector3.forward;
-            }
-            else if (Input.GetKeyDown(KeyCode.A))
-            {
-                moveDirection = Vector3.left;
-            }
-            else if (Input.GetKeyDown(KeyCode.S))
-            {
-                moveDirection = Vector3.back;
-            }
-            else if (Input.GetKeyDown(KeyCode.D))
-            {
-                moveDirection = Vector3.right;
-            }
-
-            if (moveDirection != Vector3.zero)
-            {
-                // Move the GameObject
-                transform.position += moveDirection * 3.5f;
-                // Reset the color of the GameObject
-                GetComponent<Renderer>().material.color = originalColor;
-                // Reset the flag
-                isWaitingForInput = false;
-            }
+            WaitForMoveAction();
 
         }
     }
 
     IEnumerator WaitForMoveAction()
     {
-        // Wait for the player to click on a valid move location
         while (true)
         {
             // Check for input to trigger the move action
@@ -89,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
                 // Move the player in the indicated direction
                 if (direction != Vector3.zero)
                 {
-                    transform.position += direction * 3.5f;
+                    transform.position += direction * 3.0f;
                 }
 
                 isWaitingForInput = true;

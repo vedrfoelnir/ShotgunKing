@@ -12,10 +12,6 @@ public class GameStateManager : Singleton<GameStateManager>
     //public static event Action<GameState> OnAfterStateChanged;
 
     // Dependencies
-    public GameSetupManager gameSetup;
-    public GameUnitManager unitManager;
-    public GameObject player;
-    public PlayerMovement playerBehaviour;
 
 
     //Variables
@@ -70,22 +66,22 @@ public class GameStateManager : Singleton<GameStateManager>
 
     private void HandleStart()
     {
-        gameSetup.CameraSetup();
-        gameSetup.CreateBoard();
+        GameSetupManager.Instance.CameraSetup();
+        GameSetupManager.Instance.CameraSetup();
+        GameSetupManager.Instance.CreateBoard();
         ChangeState(GameState.InitPlayer);
     }
 
     private void HandlePlayerInit()
     {
-        player = gameSetup.SpawnPlayer(2, 4);
-        playerBehaviour = player.GetComponent<PlayerMovement>();
+        GameSetupManager.Instance.SpawnPlayer(2, 4);
         ChangeState(GameState.InitOpponent);
     }
 
     private void HandleOpponentInit()
     {
         string level = Levels[currentLevelIndex];
-        gameSetup.SetupLevelFromFEN(level);
+        GameSetupManager.Instance.SetupLevelFromFEN(level);
         currentLevelIndex = (currentLevelIndex + 1) % Levels.Count;
         ChangeState(GameState.TurnPlayer);
     }
@@ -93,9 +89,7 @@ public class GameStateManager : Singleton<GameStateManager>
     private void HandlePlayerTurn()
     {
         Debug.Log("Player Action");
-        Debug.Log("Player: " + player);
-        Debug.Log("Player Movement: " + playerBehaviour);
-        playerBehaviour.TurnGreenAndWaitForInputToMove();
+        PlayerMovement.Instance.TurnGreenAndWaitForInputToMove();
     }
 
     private void HandleOpponenTurn()
