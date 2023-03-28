@@ -1,32 +1,62 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerMovement : Singleton<PlayerMovement>
+public class PlayerController : Singleton<PlayerController>
 {
+    // export
+    [HideInInspector]
+    public int HP = 3;
+
     private Color originalColor;
     private bool isWaitingForInput = false;
     private Vector3 direction = Vector3.zero;
+    private float scalingFactor;
 
-    void Start() => originalColor = GetComponent<Renderer>().material.color;
+    void Start()
+    {
+        originalColor = GetComponent<Renderer>().material.color;
+        scalingFactor = GameSetupManager.Instance.GetScaling();
+    }
 
 
-    public IEnumerator TurnGreenAndWaitForInputToMove()
+    public IEnumerator SetActiveAndWaitForInputToMove()
     {
         Debug.Log("Waiting for Movement");
         // Change the color of the GameObject to green
         GetComponent<Renderer>().material.color = Color.green;
         isWaitingForInput = true;
-        yield return StartCoroutine(WaitForAction(new KeyCode[] {  KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D })); // Mouse: KeyCode.Alpha0, KeyCode.Alpha1,
-        
+        yield return StartCoroutine(WaitForMoveAction(new KeyCode[] {  KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D })); // Mouse: KeyCode.Alpha0, KeyCode.Alpha1,
+
         if (direction != Vector3.zero)
         {
             Debug.Log("Movement Chosen: " + direction.ToString());
-            transform.position += direction * 3.0f;
-            GetComponent<Renderer>().material.color = originalColor;
-        } else
+            MovePlayer(direction);
+        }
+        else
         {
             Debug.Log("Movement Error");
-        } 
+        }
+    }
+
+    private void MovePlayer(Vector3 direction)
+    {
+        int currentRank = Mathf.RoundToInt(transform.position.z/scalingFactor + 1);
+        int currentFile = Mathf.RoundToInt(transform.position.x/scalingFactor + 1);
+        int newRank = Mathf.RoundToInt(currentRank + direction.z);
+        int newFile = Mathf.RoundToInt(currentFile + direction.x);
+
+        Debug.Log("currentRank: " + currentRank + "currentFile: " + currentFile);
+        Debug.Log("newRank: " + newRank + "newFile: " + newFile);
+        GameObject unitAtNewPosition = GameUnitManager.Instance.IsOccupied(newRank, newFile);
+        if (unitAtNewPosition != null)
+        {
+            Debug.Log("New position is occupied!");
+            return;
+        }
+
+        GetComponent<Renderer>().material.color = originalColor;
+        GameUnitManager.Instance.UpdateUnit(currentRank, currentFile, newRank, newFile);
+        transform.position += direction * scalingFactor;       
     }
 
 
@@ -49,7 +79,7 @@ public class PlayerMovement : Singleton<PlayerMovement>
         }
     }
 
-    IEnumerator WaitForAction(KeyCode[] codes)
+    IEnumerator WaitForMoveAction(KeyCode[] codes)
     {
         while (isWaitingForInput)
         {

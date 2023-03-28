@@ -29,6 +29,7 @@ public class GameUnitManager : Singleton<GameUnitManager>
         if (!gameUnits.ContainsKey((rank, file)))
         {
             gameUnits.Add((rank, file), unit);
+            Debug.Log("Added Unit " + unit.ToString() + " at " + rank + ", " + file);
         }
         else
         {
@@ -58,5 +59,31 @@ public class GameUnitManager : Singleton<GameUnitManager>
     public bool HasEnemies()
     {
         return enemies.Count > 0;
+    }
+
+    public GameObject IsOccupied(int rank, int file)
+    {
+        if (gameUnits.ContainsKey((rank, file)))
+        {
+            return gameUnits[(rank, file)];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    public void UpdateUnit(int currentRank, int currentFile, int newRank, int newFile)
+    {
+        if (gameUnits.TryGetValue((currentRank, currentFile), out GameObject unit))
+        {
+            gameUnits.Remove((currentRank, currentFile));
+            gameUnits.Add((newRank, newFile), unit);
+        }
+        else
+        {
+            Debug.LogError("Unit not found at position: " + currentRank + ", " + currentFile);
+        }
     }
 }

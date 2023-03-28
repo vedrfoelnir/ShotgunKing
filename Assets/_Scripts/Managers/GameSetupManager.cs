@@ -86,7 +86,7 @@ public class GameSetupManager : Singleton<GameSetupManager>
 
         foreach (char input in fenstr)
         {
-            if (rank >= 8)
+            if (rank > 7)
             {
                 break;
             }
@@ -115,5 +115,8 @@ public class GameSetupManager : Singleton<GameSetupManager>
         }
     }
 
-
+    internal float GetScaling()
+    {
+        return scalingFactor;
+    }
 }

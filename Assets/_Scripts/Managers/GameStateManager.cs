@@ -18,6 +18,7 @@ public class GameStateManager : Singleton<GameStateManager>
     public GameState State { get; private set; }
     private int currentLevelIndex = 0;
     private static readonly List<string> Levels = new List<string> {
+        "8/4p/8/8/8/8/8/8/",
         "rnbqqbnr/pppppppp/8/8/8/8/8/8/",
         "rnbqkbnr/8/8/8/8/8/8/8/"
     };
@@ -30,6 +31,7 @@ public class GameStateManager : Singleton<GameStateManager>
     public void ChangeState(GameState newState)
     {
         //OnBeforeStateChanged(newState);
+
         State = newState;
 
         switch (newState)
@@ -89,12 +91,27 @@ public class GameStateManager : Singleton<GameStateManager>
     private void HandlePlayerTurn()
     {
         Debug.Log("Player Action");
-        StartCoroutine(PlayerMovement.Instance.TurnGreenAndWaitForInputToMove());
+        StartCoroutine(PlayerController.Instance.SetActiveAndWaitForInputToMove());
+
+        if(!GameUnitManager.Instance.HasEnemies())
+        {
+            ChangeState(GameState.Win);
+        }
+
+        ChangeState(GameState.TurnOpponent);
     }
 
     private void HandleOpponenTurn()
     {
-        throw new NotImplementedException();
+        foreach(GameObject enemy in GameUnitManager.Instance.enemies)
+        {
+            EnemyBehaviour enemyBehavior = enemy.GetComponent<EnemyBehaviour>();
+            if(enemyBehavior == null)
+            {
+                Debug.Log("Couldn't find behaviour on: " + enemy.ToString());
+            }            
+            StartCoroutine(enemyBehavior.MoveAction());
+        }
     }
 
     private void HandleWin()

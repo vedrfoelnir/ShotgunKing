@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PawnBehaviour : EnemyBehaviour
+public class RookBehaviour : EnemyBehaviour
 {
     public override IEnumerator MoveAction()
     {
-        Debug.Log("Pawn Move");
+        Debug.Log("Rook Move");
         yield return new WaitForSeconds(1);
     }
 }
+
