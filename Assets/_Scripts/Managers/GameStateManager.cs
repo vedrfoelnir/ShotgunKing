@@ -89,7 +89,7 @@ public class GameStateManager : Singleton<GameStateManager>
     private void HandlePlayerTurn()
     {
         Debug.Log("Player Action");
-        PlayerMovement.Instance.TurnGreenAndWaitForInputToMove();
+        StartCoroutine(PlayerMovement.Instance.TurnGreenAndWaitForInputToMove());
     }
 
     private void HandleOpponenTurn()

@@ -6,9 +6,6 @@ using UnityEngine;
 public class GameSetupManager : Singleton<GameSetupManager>
 {
 
-    // Dependencies
-    private GameUnitManager unitManager;
-
     const float scalingFactor = 3.0f;
 
     [SerializeField]
@@ -26,18 +23,8 @@ public class GameSetupManager : Singleton<GameSetupManager>
     [SerializeField]
     private GameObject enemyQueen;
 
-    [HideInInspector]
-    public GameObject player;
-    [HideInInspector]
-    public List<GameObject> enemies = new List<GameObject>();
-
     public Camera mainCamera;
     private bool isBlackTile;
-
-    private void Start()
-    {
-        unitManager = GameUnitManager.Instance;
-    }
 
     public void CameraSetup()
     {
@@ -73,8 +60,8 @@ public class GameSetupManager : Singleton<GameSetupManager>
 
     public GameObject SpawnPlayer(int rank, int file)
     {
-        player = Instantiate(playerModel, new Vector3((file-1) * scalingFactor, 1.5f, (rank-1) * scalingFactor), Quaternion.identity);
-        unitManager.AddUnit(player, rank, file);
+        GameObject player = Instantiate(playerModel, new Vector3((file-1) * scalingFactor, 1.5f, (rank-1) * scalingFactor), Quaternion.identity);
+        GameUnitManager.Instance.AddUnit(player, rank, file);
         return player;
     }
 
@@ -118,7 +105,7 @@ public class GameSetupManager : Singleton<GameSetupManager>
             
                 var (prefab, value) = pieceMap[input];
                 GameObject unit = Instantiate(prefab, new Vector3(file * scalingFactor, 0, (7 - rank) * scalingFactor), Quaternion.identity);
-                unitManager.AddUnit(unit, (7 - rank), file);
+                GameUnitManager.Instance.AddUnit(unit, (7 - rank), file);
                 file++;
             }
             else

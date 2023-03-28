@@ -5,67 +5,66 @@ public class PlayerMovement : Singleton<PlayerMovement>
 {
     private Color originalColor;
     private bool isWaitingForInput = false;
+    private Vector3 direction = Vector3.zero;
 
     void Start() => originalColor = GetComponent<Renderer>().material.color;
 
 
-    public void TurnGreenAndWaitForInputToMove()
+    public IEnumerator TurnGreenAndWaitForInputToMove()
     {
         Debug.Log("Waiting for Movement");
         // Change the color of the GameObject to green
         GetComponent<Renderer>().material.color = Color.green;
         isWaitingForInput = true;
-    }
-
-    void Update()
-    {
+        yield return StartCoroutine(WaitForAction(new KeyCode[] {  KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D })); // Mouse: KeyCode.Alpha0, KeyCode.Alpha1,
         
-        if (isWaitingForInput)
+        if (direction != Vector3.zero)
         {
-            WaitForMoveAction();
+            Debug.Log("Movement Chosen: " + direction.ToString());
+            transform.position += direction * 3.0f;
+            GetComponent<Renderer>().material.color = originalColor;
+        } else
+        {
+            Debug.Log("Movement Error");
+        } 
+    }
 
+
+    private void SetChoiceTo(KeyCode keyCode)
+    {
+        switch (keyCode)
+        {
+            case (KeyCode.W):
+                direction = Vector3.forward;
+                break;
+            case (KeyCode.S):
+                direction = Vector3.back;
+                break;
+            case (KeyCode.A):
+                direction = Vector3.left;
+                break;
+            case (KeyCode.D):
+                direction = Vector3.right;
+                break;
         }
     }
 
-    IEnumerator WaitForMoveAction()
+    IEnumerator WaitForAction(KeyCode[] codes)
     {
-        while (true)
+        while (isWaitingForInput)
         {
-            // Check for input to trigger the move action
-            if (Input.GetMouseButtonDown(0))
+            foreach (KeyCode k in codes)
             {
-                Vector3 direction = Vector3.zero;
-
-                // Set the direction based on the WASD keys pressed
-                if (Input.GetKeyDown(KeyCode.W))
+                if (Input.GetKey(k))
                 {
-                    direction = Vector3.forward;
+                    isWaitingForInput = false;
+                    SetChoiceTo(k);
+                    break;
                 }
-                else if (Input.GetKeyDown(KeyCode.S))
-                {
-                    direction = Vector3.back;
-                }
-                else if (Input.GetKeyDown(KeyCode.A))
-                {
-                    direction = Vector3.left;
-                }
-                else if (Input.GetKeyDown(KeyCode.D))
-                {
-                    direction = Vector3.right;
-                }
-
-                // Move the player in the indicated direction
-                if (direction != Vector3.zero)
-                {
-                    transform.position += direction * 3.0f;
-                }
-
-                isWaitingForInput = true;
-                yield break;
             }
-
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
+
     }
 
     IEnumerator WaitForShootAction()
