@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7667368558863735696}
   - component: {fileID: 5620074202075697317}
   - component: {fileID: 1118444838646744860}
+  - component: {fileID: 5778789005926753966}
   m_Layer: 0
   m_Name: Enemy_Rook
   m_TagString: Enemy
@@ -98,3 +99,15 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5778789005926753966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799399944857073607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e608789c0ac0b4a13aa744655777cb8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

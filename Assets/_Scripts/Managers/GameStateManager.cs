@@ -46,10 +46,10 @@ public class GameStateManager : Singleton<GameStateManager>
                 HandleOpponentInit();
                 break;
             case GameState.TurnPlayer:
-                HandlePlayerTurn();
+                StartCoroutine(HandlePlayerTurn());
                 break;
             case GameState.TurnOpponent:
-                HandleOpponenTurn();
+                StartCoroutine(HandleOpponentTurn());
                 break;
             case GameState.Win:
                 HandleWin();
@@ -88,30 +88,34 @@ public class GameStateManager : Singleton<GameStateManager>
         ChangeState(GameState.TurnPlayer);
     }
 
-    private void HandlePlayerTurn()
+    private IEnumerator HandlePlayerTurn()
     {
         Debug.Log("Player Action");
-        StartCoroutine(PlayerController.Instance.SetActiveAndWaitForInputToMove());
+        yield return StartCoroutine(PlayerController.Instance.SetActiveAndWaitForInputToMove());
 
-        if(!GameUnitManager.Instance.HasEnemies())
+        if (!GameUnitManager.Instance.HasEnemies())
         {
             ChangeState(GameState.Win);
         }
 
+        yield return null; // Yielding null to allow the next frame to start the opponent's turn
         ChangeState(GameState.TurnOpponent);
     }
 
-    private void HandleOpponenTurn()
+    private IEnumerator HandleOpponentTurn()
     {
-        foreach(GameObject enemy in GameUnitManager.Instance.enemies)
+        foreach (GameObject enemy in GameUnitManager.Instance.enemies)
         {
             EnemyBehaviour enemyBehavior = enemy.GetComponent<EnemyBehaviour>();
-            if(enemyBehavior == null)
+            if (enemyBehavior == null)
             {
                 Debug.Log("Couldn't find behaviour on: " + enemy.ToString());
-            }            
-            StartCoroutine(enemyBehavior.MoveAction());
+            }
+            yield return StartCoroutine(enemyBehavior.MoveAction());
         }
+
+        yield return null; // Yielding null to allow the next frame to start the player's turn
+        ChangeState(GameState.TurnPlayer);
     }
 
     private void HandleWin()

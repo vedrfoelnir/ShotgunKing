@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 342574356709080812}
   - component: {fileID: 5580146720529945666}
   - component: {fileID: 1404739712825394638}
+  - component: {fileID: 1775202018681641837}
   m_Layer: 0
   m_Name: Enemy_Knight
   m_TagString: Enemy
@@ -98,3 +99,15 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1775202018681641837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913350158780706804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f025c36aefbf46999d689d32603b840, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
