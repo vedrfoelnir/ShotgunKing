@@ -24,6 +24,7 @@ public abstract class EnemyBehaviour : MonoBehaviour
 
     private IEnumerator TurnExecution()
     {
+        // Moving
         int currentRank;
         int currentFile;
         int nextRank;
@@ -31,14 +32,31 @@ public abstract class EnemyBehaviour : MonoBehaviour
 
         (currentRank, currentFile) = GameUnitManager.Instance.GetUnitPosition(transform.gameObject);
         (nextRank, nextFile) = ChooseFromPossibleMoves(GetPossibleMoves());
-
-        // Moving
+        
         Debug.Log("Moving " + ToString() + " to (" + nextRank + ", " + nextFile + ")");
         GetComponent<Renderer>().material.color = Color.red;
-        GameUnitManager.Instance.UpdateUnit(currentRank, currentFile, nextRank, nextFile);
+       
+        GameObject objectOnTarget = GameUnitManager.Instance.IsOccupied(nextRank, nextFile);
+        yield return new WaitUntil(() => (objectOnTarget == null || objectOnTarget != null));
+        if (objectOnTarget == null)
+        {
+            GetComponent<Renderer>().material.color = originalColor;
+            GameUnitManager.Instance.UpdateUnit(currentRank, currentFile, nextRank, nextFile);
+            yield return new WaitForSecondsRealtime(0.1f);
+        }
+        if (objectOnTarget != null && objectOnTarget.CompareTag("Player"))
+        {
+            Debug.Log(gameObject.ToString() + " strikes the player!");
+            PlayerController.Instance.HP--;
+            PlayerController.Instance.gameObject.GetComponent<Renderer>().material.color = Color.red;
+            
+            yield return new WaitForSecondsRealtime(0.1f);
 
-        yield return new WaitForSecondsRealtime(0.1f);
-        GetComponent<Renderer>().material.color = originalColor;
+            Debug.Log("Enemy Turn Executed");
+            GameUnitManager.Instance.RemoveUnit(gameObject, currentRank, currentFile);
+            Destroy(gameObject);
+            
+        }
     }
 
     public abstract List<(int, int)> GetPossibleMoves();

@@ -23,9 +23,10 @@ public class PlayerController : Singleton<PlayerController>
     {
         Debug.Log("Waiting for Movement");
         // Change the color of the GameObject to green
-        GetComponent<Renderer>().material.color = Color.green;
         isWaitingForInput = true;
-        yield return StartCoroutine(WaitForMoveAction(new KeyCode[] {  KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D })); // Mouse: KeyCode.Alpha0, KeyCode.Alpha1,
+        yield return StartCoroutine(WaitForMoveAction(new KeyCode[] {
+            KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D // Mouse: KeyCode.Alpha0, KeyCode.Alpha1,
+        })); 
 
         if (direction != Vector3.zero)
         {
@@ -46,16 +47,12 @@ public class PlayerController : Singleton<PlayerController>
         int newRank = Mathf.RoundToInt(currentRank + direction.z);
         int newFile = Mathf.RoundToInt(currentFile + direction.x);
 
-        Debug.Log("Player currentRank: " + currentRank + "currentFile: " + currentFile);
-        Debug.Log("Player newRank: " + newRank + "newFile: " + newFile);
         GameObject unitAtNewPosition = GameUnitManager.Instance.IsOccupied(newRank, newFile);
         if (unitAtNewPosition != null)
         {
             Debug.Log("New position is occupied! by: " + unitAtNewPosition.ToString());
             return;
         }
-        GetComponent<Renderer>().material.color = originalColor;
-        Debug.Log("Color Change ?");
         GameUnitManager.Instance.UpdateUnit(currentRank, currentFile, newRank, newFile);  
     }
 
@@ -81,6 +78,7 @@ public class PlayerController : Singleton<PlayerController>
 
     IEnumerator WaitForMoveAction(KeyCode[] codes)
     {
+        GetComponent<Renderer>().material.color = Color.green;
         while (isWaitingForInput)
         {
             foreach (KeyCode k in codes)
@@ -89,6 +87,7 @@ public class PlayerController : Singleton<PlayerController>
                 {
                     isWaitingForInput = false;
                     SetChoiceTo(k);
+                    GetComponent<Renderer>().material.color = originalColor;
                     break;
                 }
             }

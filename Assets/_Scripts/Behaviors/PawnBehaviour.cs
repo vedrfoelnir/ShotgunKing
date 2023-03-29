@@ -14,7 +14,6 @@ public class PawnBehaviour : EnemyBehaviour
     public override (int, int) ChooseFromPossibleMoves(List<(int, int)> possibleMoves)
     {
         (int, int) chosenMove = (-1, -1);
-        bool canStrikePlayer = false;
 
         foreach ((int, int) move in possibleMoves)
         {
@@ -27,23 +26,14 @@ public class PawnBehaviour : EnemyBehaviour
             // If there's a player diagonally in front, strike the player
             else if (GameUnitManager.Instance.IsOccupied(move.Item1, move.Item2).CompareTag("Player"))
             {
-                /**
-                int rankOffset = move.Item1 - Mathf.RoundToInt(transform.position.z / scalingFactor + 1);
-                int fileOffset = move.Item2 - Mathf.RoundToInt(transform.position.x / scalingFactor + 1);
-                if (rankOffset == forwardDirection && Mathf.Abs(fileOffset) == 1)
-                { }*/
-                canStrikePlayer = true;
-                chosenMove = move;
-                
+                chosenMove = move;      
             }
         }
+        
+        Debug.Log("Chosen Move: " + chosenMove);
 
-        // Strike the player if possible
-        if (canStrikePlayer)
-        {
-            Debug.Log("Pawn strikes the player!");
-            PlayerController.Instance.HP--;
-        }
+        // Promotion
+
 
         return chosenMove;
     }
@@ -74,6 +64,7 @@ public class PawnBehaviour : EnemyBehaviour
         {
             possibleMoves.Add((currentRank + forwardDirection, currentFile + 1));
         }
+
         Debug.Log("Possible Moves on Pawn: " + string.Join(", " , possibleMoves));
         return possibleMoves;
     }

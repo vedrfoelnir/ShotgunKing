@@ -104,19 +104,32 @@ public class GameStateManager : Singleton<GameStateManager>
 
     private IEnumerator HandleOpponentTurn()
     {
-        
-        foreach (GameObject enemy in GameUnitManager.Instance.enemies)
+        yield return new WaitForSeconds(0.5f);
+        List<GameObject> enemies = new List<GameObject>(GameUnitManager.Instance.enemies);
+        foreach (GameObject enemy in enemies)
         {
             EnemyBehaviour enemyBehavior = enemy.GetComponent<EnemyBehaviour>();
             if (enemyBehavior == null)
             {
                 Debug.Log("Couldn't find behaviour on: " + enemy.ToString());
+                continue;
             }
-            Debug.Log("Position of Pawn 1 in State: " + enemy.transform.position.z + ", " + enemy.transform.position.x);
             yield return StartCoroutine(enemyBehavior.MoveAction());
+
+            if (enemy == null)
+            {
+                GameUnitManager.Instance.enemies.Remove(enemy);
+            }
         }
 
         yield return new WaitForSeconds(0.5f); // Yielding null to allow the next frame to start the player's turn
+
+        
+        if (PlayerController.Instance.HP < 1)
+        {
+            ChangeState(GameState.Lose);
+        }
+        Debug.Log("Enemy Finished");
         ChangeState(GameState.TurnPlayer);
     }
 
