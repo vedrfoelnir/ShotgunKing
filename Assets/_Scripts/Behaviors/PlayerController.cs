@@ -40,8 +40,9 @@ public class PlayerController : Singleton<PlayerController>
 
     private void MovePlayer(Vector3 direction)
     {
-        int currentRank = Mathf.RoundToInt(transform.position.z/scalingFactor + 1);
-        int currentFile = Mathf.RoundToInt(transform.position.x/scalingFactor + 1);
+        int currentRank;
+        int currentFile;
+        (currentRank, currentFile) = GameUnitManager.Instance.GetUnitPosition(transform.gameObject);
         int newRank = Mathf.RoundToInt(currentRank + direction.z);
         int newFile = Mathf.RoundToInt(currentFile + direction.x);
 
@@ -55,8 +56,7 @@ public class PlayerController : Singleton<PlayerController>
         }
         GetComponent<Renderer>().material.color = originalColor;
         Debug.Log("Color Change ?");
-        GameUnitManager.Instance.UpdateUnit(currentRank, currentFile, newRank, newFile);
-        transform.position += direction * scalingFactor;       
+        GameUnitManager.Instance.UpdateUnit(currentRank, currentFile, newRank, newFile);  
     }
 
 

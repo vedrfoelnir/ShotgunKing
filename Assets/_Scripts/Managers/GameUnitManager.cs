@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class GameUnitManager : Singleton<GameUnitManager>
 {
+    // Export
+    [SerializeField]
+    public Dictionary<(int, int), GameObject> gameUnits = new Dictionary<(int, int), GameObject>();
     [HideInInspector]
     public GameObject player { get; set; }
     [HideInInspector]
@@ -11,8 +14,14 @@ public class GameUnitManager : Singleton<GameUnitManager>
     [HideInInspector]
     public List<GameObject> allUnits = new List<GameObject>();
 
-    [SerializeField]
-    public Dictionary<(int, int), GameObject> gameUnits = new Dictionary<(int, int), GameObject>();
+    // Import
+    private float scalingFactor;
+    
+    
+    private void Start()
+    {
+        scalingFactor = GameSetupManager.Instance.GetScaling();
+    }
 
     public void AddUnit(GameObject unit, int rank, int file)
     {
@@ -55,6 +64,7 @@ public class GameUnitManager : Singleton<GameUnitManager>
         {
             gameUnits.Remove((rank, file));
         }
+        Destroy(unit);
     }
 
     public bool HasEnemies()
@@ -93,8 +103,14 @@ public class GameUnitManager : Singleton<GameUnitManager>
     {
         if (gameUnits.TryGetValue((currentRank, currentFile), out GameObject unit))
         {
+            if ( IsOccupied(newRank, newFile) == null ) // if Object on Target
+            {
+                // TODO: What do when something there where you wanna go
+            }
+
             gameUnits.Remove((currentRank, currentFile));
             gameUnits.Add((newRank, newFile), unit);
+            unit.transform.position = new Vector3((newFile - 1) * scalingFactor, 0, (newRank - 1) * scalingFactor);
         }
         else
         {

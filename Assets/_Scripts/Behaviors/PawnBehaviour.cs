@@ -8,13 +8,7 @@ public class PawnBehaviour : EnemyBehaviour
 
     void Start()
     {
-        scalingFactor = GameSetupManager.Instance.GetScaling();
-        Debug.Log("Scaling received in general: " + scalingFactor);
         forwardDirection = -1; //GameSetupManager.Instance.GetForwardDirection(); -> Can chose whether black or white
-        int currentRank = Mathf.RoundToInt(transform.position.z / scalingFactor + 1);
-        int currentFile = Mathf.RoundToInt(transform.position.x / scalingFactor + 1);
-
-        Debug.Log("Position of Pawn on 2 Start: " + currentRank + ", " + currentFile);
     }
 
     public override (int, int) ChooseFromPossibleMoves(List<(int, int)> possibleMoves)
@@ -57,13 +51,17 @@ public class PawnBehaviour : EnemyBehaviour
     public override List<(int, int)> GetPossibleMoves()
     {
         List<(int, int)> possibleMoves = new List<(int, int)>();
-        int currentRank = Mathf.RoundToInt(transform.position.z / scalingFactor + 1);
-        int currentFile = Mathf.RoundToInt(transform.position.x / scalingFactor + 1);
 
-        Debug.Log("Position of Pawn 5 on Pawn: " + currentRank + ", " + currentFile);
+        int currentRank;
+        int currentFile;
+        (currentRank, currentFile) = GameUnitManager.Instance.GetUnitPosition(transform.gameObject);
 
         // Add legal chess moves
         possibleMoves.Add((currentRank + forwardDirection, currentFile));
+        if (currentRank == 7)
+        {
+            possibleMoves.Add((currentRank + forwardDirection * 2, currentFile));
+        }
 
         // Check if the pawn can strike the player diagonally in front
         GameObject objectOnLeft = GameUnitManager.Instance.IsOccupied(currentRank + forwardDirection, currentFile - 1);

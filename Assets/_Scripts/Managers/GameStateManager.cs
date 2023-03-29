@@ -18,7 +18,7 @@ public class GameStateManager : Singleton<GameStateManager>
     public GameState State { get; private set; }
     private int currentLevelIndex = 0;
     private static readonly List<string> Levels = new List<string> {
-        //"8/4p/8/8/8/8/8/8/",
+        "8/4pp/8/8/8/8/8/8/",
         "rnbqqbnr/pppppppp/8/8/8/8/8/8/",
         "rnbqkbnr/8/8/8/8/8/8/8/"
     };

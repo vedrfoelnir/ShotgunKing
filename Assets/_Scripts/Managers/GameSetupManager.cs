@@ -104,8 +104,8 @@ public class GameSetupManager : Singleton<GameSetupManager>
             {
             
                 var (prefab, value) = pieceMap[input];
-                GameObject unit = Instantiate(prefab, new Vector3((8-file) * scalingFactor, 0, (8 - rank) * scalingFactor), Quaternion.identity);
-                GameUnitManager.Instance.AddUnit(unit, (9 - rank), file+1);
+                GameObject unit = Instantiate(prefab, new Vector3((file-1) * scalingFactor, 0, (8 - rank) * scalingFactor), Quaternion.identity);
+                GameUnitManager.Instance.AddUnit(unit, (9 - rank), file);
                 file++;
             }
             else
