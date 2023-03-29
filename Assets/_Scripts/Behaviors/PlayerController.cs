@@ -45,16 +45,16 @@ public class PlayerController : Singleton<PlayerController>
         int newRank = Mathf.RoundToInt(currentRank + direction.z);
         int newFile = Mathf.RoundToInt(currentFile + direction.x);
 
-        Debug.Log("currentRank: " + currentRank + "currentFile: " + currentFile);
-        Debug.Log("newRank: " + newRank + "newFile: " + newFile);
+        Debug.Log("Player currentRank: " + currentRank + "currentFile: " + currentFile);
+        Debug.Log("Player newRank: " + newRank + "newFile: " + newFile);
         GameObject unitAtNewPosition = GameUnitManager.Instance.IsOccupied(newRank, newFile);
         if (unitAtNewPosition != null)
         {
-            Debug.Log("New position is occupied!");
+            Debug.Log("New position is occupied! by: " + unitAtNewPosition.ToString());
             return;
         }
-
         GetComponent<Renderer>().material.color = originalColor;
+        Debug.Log("Color Change ?");
         GameUnitManager.Instance.UpdateUnit(currentRank, currentFile, newRank, newFile);
         transform.position += direction * scalingFactor;       
     }

@@ -11,6 +11,7 @@ public class GameUnitManager : Singleton<GameUnitManager>
     [HideInInspector]
     public List<GameObject> allUnits = new List<GameObject>();
 
+    [SerializeField]
     public Dictionary<(int, int), GameObject> gameUnits = new Dictionary<(int, int), GameObject>();
 
     public void AddUnit(GameObject unit, int rank, int file)
@@ -71,6 +72,20 @@ public class GameUnitManager : Singleton<GameUnitManager>
         {
             return null;
         }
+    }
+
+    public (int, int) GetUnitPosition(GameObject searchedObject)
+    {
+        foreach (var gameUnit in gameUnits)
+        {
+            if (gameUnit.Value == searchedObject)
+            {
+                return gameUnit.Key;
+            }
+        }
+
+        // If the given unit is not found in the dictionary, return (-1, -1) or throw an exception.
+        return (-1, -1);
     }
 
 

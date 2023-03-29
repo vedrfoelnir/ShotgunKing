@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameSetupManager : Singleton<GameSetupManager>
 {
 
-    const float scalingFactor = 3.0f;
+    public const float scalingFactor = 3.0f;
 
     [SerializeField]
     private GameObject platFormPrefab;
@@ -81,12 +81,12 @@ public class GameSetupManager : Singleton<GameSetupManager>
             {'q', (enemyQueen, 9)}
         };
 
-        int rank = 0;
-        int file = 0;
+        int rank = 1;
+        int file = 1;
 
         foreach (char input in fenstr)
         {
-            if (rank > 7)
+            if (rank > 8)
             {
                 break;
             }
@@ -94,7 +94,7 @@ public class GameSetupManager : Singleton<GameSetupManager>
             if (input == '/')
             {
                 rank++;
-                file = 0;
+                file = 1;
             }
             else if (char.IsDigit(input))
             {
@@ -104,8 +104,8 @@ public class GameSetupManager : Singleton<GameSetupManager>
             {
             
                 var (prefab, value) = pieceMap[input];
-                GameObject unit = Instantiate(prefab, new Vector3(file * scalingFactor, 0, (7 - rank) * scalingFactor), Quaternion.identity);
-                GameUnitManager.Instance.AddUnit(unit, (7 - rank), file);
+                GameObject unit = Instantiate(prefab, new Vector3((8-file) * scalingFactor, 0, (8 - rank) * scalingFactor), Quaternion.identity);
+                GameUnitManager.Instance.AddUnit(unit, (9 - rank), file+1);
                 file++;
             }
             else
@@ -117,6 +117,7 @@ public class GameSetupManager : Singleton<GameSetupManager>
 
     internal float GetScaling()
     {
+        Debug.Log("Scaling returned: " + scalingFactor);
         return scalingFactor;
     }
 }

@@ -18,7 +18,7 @@ public class GameStateManager : Singleton<GameStateManager>
     public GameState State { get; private set; }
     private int currentLevelIndex = 0;
     private static readonly List<string> Levels = new List<string> {
-        "8/4p/8/8/8/8/8/8/",
+        //"8/4p/8/8/8/8/8/8/",
         "rnbqqbnr/pppppppp/8/8/8/8/8/8/",
         "rnbqkbnr/8/8/8/8/8/8/8/"
     };
@@ -98,12 +98,13 @@ public class GameStateManager : Singleton<GameStateManager>
             ChangeState(GameState.Win);
         }
 
-        yield return null; // Yielding null to allow the next frame to start the opponent's turn
+        yield return new WaitForSeconds(0.5f); // Yielding null to allow the next frame to start the opponent's turn
         ChangeState(GameState.TurnOpponent);
     }
 
     private IEnumerator HandleOpponentTurn()
     {
+        
         foreach (GameObject enemy in GameUnitManager.Instance.enemies)
         {
             EnemyBehaviour enemyBehavior = enemy.GetComponent<EnemyBehaviour>();
@@ -111,10 +112,11 @@ public class GameStateManager : Singleton<GameStateManager>
             {
                 Debug.Log("Couldn't find behaviour on: " + enemy.ToString());
             }
+            Debug.Log("Position of Pawn 1 in State: " + enemy.transform.position.z + ", " + enemy.transform.position.x);
             yield return StartCoroutine(enemyBehavior.MoveAction());
         }
 
-        yield return null; // Yielding null to allow the next frame to start the player's turn
+        yield return new WaitForSeconds(0.5f); // Yielding null to allow the next frame to start the player's turn
         ChangeState(GameState.TurnPlayer);
     }
 
@@ -141,4 +143,3 @@ public enum GameState
     Win = 5,
     Lose = 6,
 }
-
