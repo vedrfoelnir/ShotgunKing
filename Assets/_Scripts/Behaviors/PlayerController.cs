@@ -5,24 +5,22 @@ public class PlayerController : Singleton<PlayerController>
 {
     // export
     [HideInInspector]
-    public int HP = 3;
+    public int HP { get; set; }
 
-    private Color originalColor;
     private bool isWaitingForInput = false;
     private Vector3 direction = Vector3.zero;
     private float scalingFactor;
 
     void Start()
     {
-        originalColor = GetComponent<Renderer>().material.color;
         scalingFactor = GameSetupManager.Instance.GetScaling();
+        HP = 1;
     }
 
 
     public IEnumerator SetActiveAndWaitForInputToMove()
     {
         Debug.Log("Waiting for Movement");
-        // Change the color of the GameObject to green
         isWaitingForInput = true;
         yield return StartCoroutine(WaitForMoveAction(new KeyCode[] {
             KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D // Mouse: KeyCode.Alpha0, KeyCode.Alpha1,
@@ -86,13 +84,13 @@ public class PlayerController : Singleton<PlayerController>
                 if (Input.GetKey(k))
                 {
                     isWaitingForInput = false;
-                    SetChoiceTo(k);
-                    GetComponent<Renderer>().material.color = originalColor;
+                    SetChoiceTo(k);                    
                     break;
                 }
             }
             yield return new WaitForEndOfFrame();
         }
+        GetComponent<Renderer>().material.color = Color.black;
 
     }
 

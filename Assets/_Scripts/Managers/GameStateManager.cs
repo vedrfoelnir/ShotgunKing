@@ -90,13 +90,9 @@ public class GameStateManager : Singleton<GameStateManager>
 
     private IEnumerator HandlePlayerTurn()
     {
+
         Debug.Log("Player Action");
         yield return StartCoroutine(PlayerController.Instance.SetActiveAndWaitForInputToMove());
-
-        if (!GameUnitManager.Instance.HasEnemies())
-        {
-            ChangeState(GameState.Win);
-        }
 
         yield return new WaitForSeconds(0.5f); // Yielding null to allow the next frame to start the opponent's turn
         ChangeState(GameState.TurnOpponent);
@@ -124,23 +120,37 @@ public class GameStateManager : Singleton<GameStateManager>
 
         yield return new WaitForSeconds(0.5f); // Yielding null to allow the next frame to start the player's turn
 
-        
+        Debug.Log("Enemy Finished");
+
+        yield return StartCoroutine(EvaluateGameState());
+    }
+
+    private IEnumerator EvaluateGameState()
+    {
+        yield return new WaitForEndOfFrame();
         if (PlayerController.Instance.HP < 1)
         {
             ChangeState(GameState.Lose);
         }
-        Debug.Log("Enemy Finished");
-        ChangeState(GameState.TurnPlayer);
+        else if (!GameUnitManager.Instance.HasEnemies())
+        {
+            Debug.Log("HP left: " + PlayerController.Instance.HP);
+            ChangeState(GameState.Win);
+        }
+        else
+        {
+            ChangeState(GameState.TurnPlayer);
+        }
     }
 
     private void HandleWin()
     {
-        throw new NotImplementedException();
+        PlayerController.Instance.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
     }
 
     private void HandleLose()
     {
-        throw new NotImplementedException();
+        PlayerController.Instance.gameObject.GetComponent<Renderer>().material.color = Color.blue;
     }
 
 }
