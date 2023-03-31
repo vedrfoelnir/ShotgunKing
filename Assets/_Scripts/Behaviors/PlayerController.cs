@@ -14,7 +14,7 @@ public class PlayerController : Singleton<PlayerController>
     void Start()
     {
         scalingFactor = GameSetupManager.Instance.GetScaling();
-        HP = 1;
+        HP = 3;
     }
 
 
@@ -23,7 +23,7 @@ public class PlayerController : Singleton<PlayerController>
         Debug.Log("Waiting for Movement");
         isWaitingForInput = true;
         yield return StartCoroutine(WaitForMoveAction(new KeyCode[] {
-            KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D // Mouse: KeyCode.Alpha0, KeyCode.Alpha1,
+            KeyCode.W, KeyCode.A, KeyCode.X, KeyCode.D , KeyCode.Q, KeyCode.E, KeyCode.Y, KeyCode.C // Mouse: KeyCode.Alpha0, KeyCode.Alpha1,
         })); 
 
         if (direction != Vector3.zero)
@@ -62,7 +62,7 @@ public class PlayerController : Singleton<PlayerController>
             case (KeyCode.W):
                 direction = Vector3.forward;
                 break;
-            case (KeyCode.S):
+            case (KeyCode.X):
                 direction = Vector3.back;
                 break;
             case (KeyCode.A):
@@ -71,7 +71,20 @@ public class PlayerController : Singleton<PlayerController>
             case (KeyCode.D):
                 direction = Vector3.right;
                 break;
+            case (KeyCode.Q):
+                direction = Vector3.forward + Vector3.left;
+                break;
+            case (KeyCode.E):
+                direction = Vector3.forward + Vector3.right;
+                break;
+            case (KeyCode.Y):
+                direction = Vector3.back + Vector3.left;
+                break;
+            case (KeyCode.C):
+                direction = Vector3.back + Vector3.right;
+                break;
         }
+        Debug.Log("Key Pressed: " + keyCode.ToString());
     }
 
     IEnumerator WaitForMoveAction(KeyCode[] codes)

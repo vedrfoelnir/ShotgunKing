@@ -17,7 +17,7 @@ public class PawnBehaviour : EnemyBehaviour
 
         foreach ((int, int) move in possibleMoves)
         {
-            Debug.Log("Evaluated Move: " + move.Item1 + ", " + move.Item2);
+            Debug.Log("Pawn Evaluated Move: " + move.Item1 + ", " + move.Item2);
             // If there's nothing in the way, move there
             if (!GameUnitManager.Instance.IsOccupied(move.Item1, move.Item2))
             {
@@ -30,9 +30,9 @@ public class PawnBehaviour : EnemyBehaviour
             }
         }
         
-        Debug.Log("Chosen Move: " + chosenMove);
+        Debug.Log("Pawn Chosen Move: " + chosenMove);
 
-        // Promotion
+        // TODO Promotion
 
 
         return chosenMove;
