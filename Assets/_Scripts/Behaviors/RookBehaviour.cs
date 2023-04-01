@@ -43,6 +43,8 @@ public class RookBehaviour : EnemyBehaviour
             possibleMoves.Add((i, currentFile));
             possibleMoves.Add((currentRank, i));
         }
+        // Remove moves not on the board
+        possibleMoves.RemoveAll(move => move.Item1 < 1 || move.Item1 > 8 || move.Item2 < 1 || move.Item2 > 8);
 
         Debug.Log("Possible Moves on Rook: " + string.Join(", ", possibleMoves));
         return possibleMoves;

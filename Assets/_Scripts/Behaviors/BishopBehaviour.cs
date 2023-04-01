@@ -47,6 +47,9 @@ public class BishopBehaviour : EnemyBehaviour
             }
         }
 
+        // Remove moves not on the board
+        possibleMoves.RemoveAll(move => move.Item1 < 1 || move.Item1 > 8 || move.Item2 < 1 || move.Item2 > 8);
+
         Debug.Log("Possible Moves on Bishop: " + string.Join(", ", possibleMoves));
         return possibleMoves;
     }

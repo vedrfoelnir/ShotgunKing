@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class QueenBehaviour : EnemyBehaviour
 {
@@ -28,7 +29,11 @@ public class QueenBehaviour : EnemyBehaviour
                     chosenMove = move;
                     break;
                 }
+            } else
+            {
+                chosenMove = move;
             }
+            
         }
 
         Debug.Log("Queen: Chosen Move: " + chosenMove);
@@ -47,18 +52,36 @@ public class QueenBehaviour : EnemyBehaviour
         // Add legal chess moves
         for (int i = 1; i <= 8; i++)
         {
-            // Add moves along the rank and file
-            possibleMoves.Add((i, currentFile));
-            possibleMoves.Add((currentRank, i));
-
-            // Add moves along the diagonals
-            possibleMoves.Add((currentRank + i, currentFile + i));
-            possibleMoves.Add((currentRank - i, currentFile + i));
-            possibleMoves.Add((currentRank + i, currentFile - i));
-            possibleMoves.Add((currentRank - i, currentFile - i));
+            // Add moves along the current file
+            if (i != currentRank)
+            {
+                possibleMoves.Add((i, currentFile));
+            }
+            // Add moves along the current rank
+            if (i != currentFile)
+            {
+                possibleMoves.Add((currentRank, i));
+            }
+            // Add moves along the diagonal lines
+            if (i != currentRank)
+            {
+                int diff = Mathf.Abs(i - currentRank);
+                if (currentFile + diff <= 8)
+                {
+                    possibleMoves.Add((i, currentFile + diff));
+                }
+                if (currentFile - diff >= 1)
+                {
+                    possibleMoves.Add((i, currentFile - diff));
+                }
+            }
         }
+
+        // Remove moves not on the board
+        possibleMoves.RemoveAll(move => move.Item1 < 1 || move.Item1 > 8 || move.Item2 < 1 || move.Item2 > 8);
 
         Debug.Log("Possible Moves on Queen: " + string.Join(", ", possibleMoves));
         return possibleMoves;
     }
+
 }
