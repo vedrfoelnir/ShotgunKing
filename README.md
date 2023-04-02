@@ -1,3 +1,3 @@
 # Shotgun King
 
-Unity Project for B43.1 CG-189784-9+10 @ HTW Berlin
+Simple Unity3D clone of the winner of Ludum Dare #50 to familiarize myself with the engine
