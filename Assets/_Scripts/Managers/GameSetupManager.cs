@@ -42,7 +42,7 @@ public class GameSetupManager : Singleton<GameSetupManager>
 
             for (int file = 0; file < 8; file++)
             {
-                var plt = Instantiate(platFormPrefab, new Vector3(scalingFactor * file, 0, scalingFactor * rank), Quaternion.identity);
+                var plt = Instantiate(platFormPrefab, new Vector3(scalingFactor * file, -0.5f, scalingFactor * rank), Quaternion.identity);
 
                 if (!isBlackTile)
                 {
@@ -60,7 +60,7 @@ public class GameSetupManager : Singleton<GameSetupManager>
 
     public GameObject SpawnPlayer(int rank, int file)
     {
-        GameObject player = Instantiate(playerModel, new Vector3((file-1) * scalingFactor, 1.5f, (rank-1) * scalingFactor), Quaternion.identity);
+        GameObject player = Instantiate(playerModel, new Vector3((file-1) * scalingFactor, 0.0f, (rank-1) * scalingFactor), Quaternion.Euler(-90, 0, 0));
         GameUnitManager.Instance.AddUnit(player, rank, file);
         return player;
     }
@@ -104,7 +104,7 @@ public class GameSetupManager : Singleton<GameSetupManager>
             {
             
                 var (prefab, value) = pieceMap[input];
-                GameObject unit = Instantiate(prefab, new Vector3((file-1) * scalingFactor, 0, (8 - rank) * scalingFactor), Quaternion.identity);
+                GameObject unit = Instantiate(prefab, new Vector3((file-1) * scalingFactor, 0, (8 - rank) * scalingFactor), Quaternion.Euler(-90,0,0));
                 GameUnitManager.Instance.AddUnit(unit, (9 - rank), file);
                 file++;
             }

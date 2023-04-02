@@ -103,9 +103,10 @@ public class GameUnitManager : Singleton<GameUnitManager>
     {
         if (gameUnits.TryGetValue((currentRank, currentFile), out GameObject unit))
         {
-            if ( IsOccupied(newRank, newFile) == null ) // if Object on Target
+            if ( IsOccupied(newRank, newFile) != null ) // if Object on Target
             {
                 // TODO: What do when something there where you wanna go
+                Debug.LogError("Field occupied by " + IsOccupied(newRank, newFile) + " when: " + unit + " tried to go to " + currentRank + ", " + currentFile);
             }
 
             gameUnits.Remove((currentRank, currentFile));

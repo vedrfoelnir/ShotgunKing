@@ -11,12 +11,18 @@ public class PlayerController : Singleton<PlayerController>
     private Vector3 direction = Vector3.zero;
     private float scalingFactor;
 
+    [SerializeField]
+    private GameObject crosshairPrefab;
+    private GameObject crosshair;
+
+    float hitRank;
+    float hitFile;
+
     void Start()
     {
-        scalingFactor = GameSetupManager.Instance.GetScaling();
         HP = 3;
+        scalingFactor = GameSetupManager.Instance.GetScaling();
     }
-
 
     public IEnumerator SetActiveAndWaitForInputToMove()
     {
@@ -35,6 +41,17 @@ public class PlayerController : Singleton<PlayerController>
         {
             Debug.Log("Movement Error");
         }
+    }
+
+    public IEnumerator WaitForInputToShoot()
+    {
+        Debug.Log("Waiting for Target");
+        isWaitingForInput = true;
+        yield return StartCoroutine(WaitForShootAction());
+
+        Debug.Log("Hit on: " + hitRank + ", " + hitFile);
+        yield return new WaitForEndOfFrame();
+        
     }
 
     private void MovePlayer(Vector3 direction)
@@ -104,24 +121,39 @@ public class PlayerController : Singleton<PlayerController>
             yield return new WaitForEndOfFrame();
         }
         GetComponent<Renderer>().material.color = Color.black;
-
     }
 
     IEnumerator WaitForShootAction()
     {
-        // Wait for the player to click on a valid target to shoot
-        while (true)
+        GetComponent<Renderer>().material.color = Color.cyan;
+        while (isWaitingForInput)
         {
-            // Check for input to trigger the shoot action
-            if (Input.GetMouseButtonDown(0))
+            // Wait for player input to select a target
+            if (Input.GetKey(KeyCode.S))
             {
-                // TODO: Implement the shoot action
-                isWaitingForInput = true;
-                yield break;
+                Debug.Log("isWaitingForInput");
+                // Cast a ray from the mouse position to the game world
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Debug.Log("Ray: " + ray.ToString());
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
+                    hitRank = hit.transform.position.z / scalingFactor;
+                    hitFile = hit.transform.position.x / scalingFactor;
+
+                    // (hitRank, hitFile) = GameUnitManager.Instance.GetUnitPosition(hit.transform.gameObject);
+                    // crosshair = Instantiate(crosshairPrefab, new Vector3(hitFile * scalingFactor, 0.5f, hitRank * scalingFactor), Quaternion.Euler(-90, 0, 0));
+                    crosshair = Instantiate(crosshairPrefab, new Vector3(hitFile * scalingFactor, 0.5f, hitRank * scalingFactor), Quaternion.Euler(-90, 0, 0));
+                    yield return new WaitForEndOfFrame();
+
+                    // Exit the coroutine
+                    yield break;
+                    
+                }
             }
 
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
+        GetComponent<Renderer>().material.color = Color.black;
     }
 
     IEnumerator WaitForSpecialAction()
@@ -141,14 +173,3 @@ public class PlayerController : Singleton<PlayerController>
         }
     }
 }
-
-/**
-    // Get the mouse position in screen space
-    Vector3 mousePosition = Input.mousePosition;
-    // Convert the mouse position to world space
-    Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-    // Get the direction from the game object to the mouse position
-    Vector3 direction = mouseWorldPosition - transform.position;
-    // Rotate the game object to face the mouse cursor
-    transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
- */

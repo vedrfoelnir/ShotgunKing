@@ -48,10 +48,7 @@ public class PawnBehaviour : EnemyBehaviour
 
         // Add legal chess moves
         possibleMoves.Add((currentRank + forwardDirection, currentFile));
-        if (currentRank == 7)
-        {
-            possibleMoves.Add((currentRank + forwardDirection * 2, currentFile));
-        }
+        
 
         // Check if the pawn can strike the player diagonally in front
         GameObject objectOnLeft = GameUnitManager.Instance.IsOccupied(currentRank + forwardDirection, currentFile - 1);

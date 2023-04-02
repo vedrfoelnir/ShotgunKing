@@ -3,7 +3,22 @@ guid: d3a962207a5d546fe95992da4033cbee
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - platFormPrefab: {fileID: 3601999258359771890, guid: fcd247b1ceee54bc79da197de07e7651,
+      type: 3}
+  - playerModel: {fileID: 5088117646087649648, guid: b5433006e639c4250a6e5a09c1841f06,
+      type: 3}
+  - enemyPawn: {fileID: 7615749915944685216, guid: 870b86c8264134766801a9ac2ff7b998,
+      type: 3}
+  - enemyKnight: {fileID: 1913350158780706804, guid: d300a2efefeb848ba94af96a81c7dd30,
+      type: 3}
+  - enemyBishop: {fileID: 5442522048723078324, guid: 0e2bb1303545043a7b52dec78e30bba9,
+      type: 3}
+  - enemyRook: {fileID: 1799399944857073607, guid: 6e3af525a4fb04d8097e6c05c7cf8be2,
+      type: 3}
+  - enemyQueen: {fileID: 4120941709446898783, guid: c29bfac19c56247338c761c1f119ce0e,
+      type: 3}
+  - mainCamera: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

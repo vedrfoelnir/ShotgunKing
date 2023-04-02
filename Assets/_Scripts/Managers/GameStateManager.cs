@@ -18,7 +18,7 @@ public class GameStateManager : Singleton<GameStateManager>
     public GameState State { get; private set; }
     private int currentLevelIndex = 0;
     private static readonly List<string> Levels = new List<string> {
-        "3n1n1n/8/8/8/8/8/8/8/",
+        "2p1p1p/8/8/8/8/8/8/8/",
         "8/4pprr/8/8/8/8/8/8/",
         "rnbqqbnr/pppppppp/8/8/8/8/8/8/",
         "rnbqkbnr/8/8/8/8/8/8/8/"
@@ -77,7 +77,7 @@ public class GameStateManager : Singleton<GameStateManager>
 
     private void HandlePlayerInit()
     {
-        GameSetupManager.Instance.SpawnPlayer(2, 4);
+        GameSetupManager.Instance.SpawnPlayer(2, 2);
         ChangeState(GameState.InitOpponent);
     }
 
@@ -94,7 +94,8 @@ public class GameStateManager : Singleton<GameStateManager>
 
         Debug.Log("Player Action");
         yield return StartCoroutine(PlayerController.Instance.SetActiveAndWaitForInputToMove());
-
+        yield return null;
+        yield return StartCoroutine(PlayerController.Instance.WaitForInputToShoot());
         yield return new WaitForSeconds(0.5f); // Yielding null to allow the next frame to start the opponent's turn
         ChangeState(GameState.TurnOpponent);
     }
