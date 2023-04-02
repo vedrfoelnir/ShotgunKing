@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class GameUnitManager : Singleton<GameUnitManager>
 {
+    // Export
+    [SerializeField]
+    public Dictionary<(int, int), GameObject> gameUnits = new Dictionary<(int, int), GameObject>();
     [HideInInspector]
     public GameObject player { get; set; }
     [HideInInspector]
@@ -11,7 +14,14 @@ public class GameUnitManager : Singleton<GameUnitManager>
     [HideInInspector]
     public List<GameObject> allUnits = new List<GameObject>();
 
-    public Dictionary<(int, int), GameObject> gameUnits = new Dictionary<(int, int), GameObject>();
+    // Import
+    private float scalingFactor;
+    
+    
+    private void Start()
+    {
+        scalingFactor = GameSetupManager.Instance.GetScaling();
+    }
 
     public void AddUnit(GameObject unit, int rank, int file)
     {
@@ -29,6 +39,7 @@ public class GameUnitManager : Singleton<GameUnitManager>
         if (!gameUnits.ContainsKey((rank, file)))
         {
             gameUnits.Add((rank, file), unit);
+            Debug.Log("Added Unit " + unit.ToString() + " at " + rank + ", " + file);
         }
         else
         {
@@ -53,10 +64,58 @@ public class GameUnitManager : Singleton<GameUnitManager>
         {
             gameUnits.Remove((rank, file));
         }
+        Destroy(unit);
     }
 
     public bool HasEnemies()
     {
         return enemies.Count > 0;
+    }
+
+    public GameObject IsOccupied(int rank, int file)
+    {
+        if (gameUnits.ContainsKey((rank, file)))
+        {
+            return gameUnits[(rank, file)];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public (int, int) GetUnitPosition(GameObject searchedObject)
+    {
+        foreach (var gameUnit in gameUnits)
+        {
+            if (gameUnit.Value == searchedObject)
+            {
+                return gameUnit.Key;
+            }
+        }
+
+        // If the given unit is not found in the dictionary, return (-1, -1) or throw an exception.
+        return (-1, -1);
+    }
+
+
+    public void UpdateUnit(int currentRank, int currentFile, int newRank, int newFile)
+    {
+        if (gameUnits.TryGetValue((currentRank, currentFile), out GameObject unit))
+        {
+            if ( IsOccupied(newRank, newFile) != null ) // if Object on Target
+            {
+                // TODO: What do when something there where you wanna go
+                Debug.LogError("Field occupied by " + IsOccupied(newRank, newFile) + " when: " + unit + " tried to go to " + currentRank + ", " + currentFile);
+            }
+
+            gameUnits.Remove((currentRank, currentFile));
+            gameUnits.Add((newRank, newFile), unit);
+            unit.transform.position = new Vector3((newFile - 1) * scalingFactor, 0, (newRank - 1) * scalingFactor);
+        }
+        else
+        {
+            Debug.LogError("Unit not found at position: " + currentRank + ", " + currentFile);
+        }
     }
 }

@@ -6,10 +6,7 @@ using UnityEngine;
 public class GameSetupManager : Singleton<GameSetupManager>
 {
 
-    // Dependencies
-    private GameUnitManager unitManager;
-
-    const float scalingFactor = 3.0f;
+    public const float scalingFactor = 3.0f;
 
     [SerializeField]
     private GameObject platFormPrefab;
@@ -26,18 +23,8 @@ public class GameSetupManager : Singleton<GameSetupManager>
     [SerializeField]
     private GameObject enemyQueen;
 
-    [HideInInspector]
-    public GameObject player;
-    [HideInInspector]
-    public List<GameObject> enemies = new List<GameObject>();
-
     public Camera mainCamera;
     private bool isBlackTile;
-
-    private void Start()
-    {
-        unitManager = GameUnitManager.Instance;
-    }
 
     public void CameraSetup()
     {
@@ -55,7 +42,7 @@ public class GameSetupManager : Singleton<GameSetupManager>
 
             for (int file = 0; file < 8; file++)
             {
-                var plt = Instantiate(platFormPrefab, new Vector3(scalingFactor * file, 0, scalingFactor * rank), Quaternion.identity);
+                var plt = Instantiate(platFormPrefab, new Vector3(scalingFactor * file, -0.5f, scalingFactor * rank), Quaternion.identity);
 
                 if (!isBlackTile)
                 {
@@ -72,61 +59,65 @@ public class GameSetupManager : Singleton<GameSetupManager>
     }
 
     public GameObject SpawnPlayer(int rank, int file)
-{
-    player = Instantiate(playerModel, new Vector3((file-1) * scalingFactor, 1.5f, (rank-1) * scalingFactor), Quaternion.identity);
-    unitManager.AddUnit(player, rank, file);
-    return player;
-}
-
-public void SetupLevelFromFEN(string fenstr)
-{
-    if (string.IsNullOrEmpty(fenstr))
     {
-        throw new ArgumentException("FEN string input is invalid.");
+        GameObject player = Instantiate(playerModel, new Vector3((file-1) * scalingFactor, 0.0f, (rank-1) * scalingFactor), Quaternion.Euler(-90, 0, 0));
+        GameUnitManager.Instance.AddUnit(player, rank, file);
+        return player;
     }
 
-    Dictionary<char, (GameObject prefab, int id)> pieceMap = new Dictionary<char, (GameObject, int)>()
+    public void SetupLevelFromFEN(string fenstr)
     {
-        {'p', (enemyPawn, 1)},
-        {'n', (enemyKnight, 3)},
-        {'b', (enemyBishop, 3)},
-        {'r', (enemyRook, 5)},
-        {'q', (enemyQueen, 9)}
-    };
-
-    int rank = 0;
-    int file = 0;
-
-    foreach (char input in fenstr)
-    {
-        if (rank >= 8)
-        {
-            break;
-        }
-
-        if (input == '/')
-        {
-            rank++;
-            file = 0;
-        }
-        else if (char.IsDigit(input))
-        {
-            file += (input - '0');
-        }
-        else if (pieceMap.ContainsKey(input))
-        {
-            
-            var (prefab, value) = pieceMap[input];
-            GameObject unit = Instantiate(prefab, new Vector3(file * scalingFactor, 0, (7 - rank) * scalingFactor), Quaternion.identity);
-            unitManager.AddUnit(unit, (7 - rank), file);
-            file++;
-        }
-        else
+        if (string.IsNullOrEmpty(fenstr))
         {
             throw new ArgumentException("FEN string input is invalid.");
         }
+
+        Dictionary<char, (GameObject prefab, int id)> pieceMap = new Dictionary<char, (GameObject, int)>()
+        {
+            {'p', (enemyPawn, 1)},
+            {'n', (enemyKnight, 3)},
+            {'b', (enemyBishop, 3)},
+            {'r', (enemyRook, 5)},
+            {'q', (enemyQueen, 9)}
+        };
+
+        int rank = 1;
+        int file = 1;
+
+        foreach (char input in fenstr)
+        {
+            if (rank > 8)
+            {
+                break;
+            }
+
+            if (input == '/')
+            {
+                rank++;
+                file = 1;
+            }
+            else if (char.IsDigit(input))
+            {
+                file += (input - '0');
+            }
+            else if (pieceMap.ContainsKey(input))
+            {
+            
+                var (prefab, value) = pieceMap[input];
+                GameObject unit = Instantiate(prefab, new Vector3((file-1) * scalingFactor, 0, (8 - rank) * scalingFactor), Quaternion.Euler(-90,0,0));
+                GameUnitManager.Instance.AddUnit(unit, (9 - rank), file);
+                file++;
+            }
+            else
+            {
+                throw new ArgumentException("FEN string input is invalid.");
+            }
+        }
     }
-}
 
-
+    internal float GetScaling()
+    {
+        Debug.Log("Scaling returned: " + scalingFactor);
+        return scalingFactor;
+    }
 }
