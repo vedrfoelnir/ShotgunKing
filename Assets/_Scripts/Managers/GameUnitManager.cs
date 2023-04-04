@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class GameUnitManager : Singleton<GameUnitManager>
 {
@@ -13,6 +14,9 @@ public class GameUnitManager : Singleton<GameUnitManager>
     public List<GameObject> enemies = new List<GameObject>();
     [HideInInspector]
     public List<GameObject> allUnits = new List<GameObject>();
+
+    [SerializeField]
+    private GameObject enemyQueen;
 
     // Import
     private float scalingFactor;
@@ -64,7 +68,7 @@ public class GameUnitManager : Singleton<GameUnitManager>
         {
             gameUnits.Remove((rank, file));
         }
-        Destroy(unit);
+        // Destroy(unit); Destroy now handled by Particle System
     }
 
     public bool HasEnemies()
@@ -106,7 +110,9 @@ public class GameUnitManager : Singleton<GameUnitManager>
             if ( IsOccupied(newRank, newFile) != null ) // if Object on Target
             {
                 // TODO: What do when something there where you wanna go
+                
                 Debug.LogError("Field occupied by " + IsOccupied(newRank, newFile) + " when: " + unit + " tried to go to " + currentRank + ", " + currentFile);
+                return;
             }
 
             gameUnits.Remove((currentRank, currentFile));
@@ -117,5 +123,29 @@ public class GameUnitManager : Singleton<GameUnitManager>
         {
             Debug.LogError("Unit not found at position: " + currentRank + ", " + currentFile);
         }
+    }
+
+    internal void damageUnitOnCoords(int damageAmount, int hitRank, int hitFile)
+    {
+        GameObject target = IsOccupied(hitRank, hitFile);
+        
+        if(target != null)
+        {
+            Debug.Log("Hit on " + target.ToString() + " at " + hitRank + ", " + hitFile);
+            target.gameObject.GetComponent<EnemyBehaviour>().damage(damageAmount);
+        } else
+        {
+            Debug.LogError("Target not found at  " + hitRank + ", " + hitFile);
+        }
+         
+    }
+
+    internal void Promote(GameObject toPromote, int item1, int item2)
+    {
+        RemoveUnit(toPromote, item1, item2);
+        Destroy(toPromote);
+        GameObject promotedQueen = Instantiate(enemyQueen, new Vector3((item2 - 1) * scalingFactor, 0, (item1) * scalingFactor), Quaternion.Euler(-90, 0, 0));
+        Debug.Log("Spawn Queen on " + item1 + "," +  item2);
+        AddUnit(promotedQueen, item1, item2);
     }
 }

@@ -19,9 +19,9 @@ public class GameStateManager : Singleton<GameStateManager>
     private int currentLevelIndex = 0;
     private static readonly List<string> Levels = new List<string> {
         "2p1p1p/8/8/8/8/8/8/8/",
-        "8/4pprr/8/8/8/8/8/8/",
+        "8/4ppnr/8/8/8/8/8/8/",
         "rnbqqbnr/pppppppp/8/8/8/8/8/8/",
-        "rnbqkbnr/8/8/8/8/8/8/8/"
+        "win"
     };
 
     void Start()
@@ -84,6 +84,10 @@ public class GameStateManager : Singleton<GameStateManager>
     private void HandleOpponentInit()
     {
         string level = Levels[currentLevelIndex];
+        if(level == "win")
+        {
+            ChangeState(GameState.Win);
+        }
         GameSetupManager.Instance.SetupLevelFromFEN(level);
         currentLevelIndex = (currentLevelIndex + 1) % Levels.Count;
         ChangeState(GameState.TurnPlayer);
@@ -137,7 +141,7 @@ public class GameStateManager : Singleton<GameStateManager>
         else if (!GameUnitManager.Instance.HasEnemies())
         {
             Debug.Log("HP left: " + PlayerController.Instance.HP);
-            ChangeState(GameState.Win);
+            ChangeState(GameState.InitOpponent);
         }
         else
         {
@@ -153,6 +157,11 @@ public class GameStateManager : Singleton<GameStateManager>
     private void HandleLose()
     {
         PlayerController.Instance.gameObject.GetComponent<Renderer>().material.color = Color.blue;
+    }
+
+    public String getCurrentLevel()
+    {
+        return "Level: " + currentLevelIndex + "\n     with FEN: " + Levels[currentLevelIndex-1];
     }
 
 }
