@@ -510,6 +510,7 @@ GameObject:
   - component: {fileID: 5478067536387414976}
   - component: {fileID: 8910894076014335077}
   - component: {fileID: 6651022505171968175}
+  - component: {fileID: -4548132393320249404}
   m_Layer: 0
   m_Name: ShotGun
   m_TagString: Untagged
@@ -590,6 +591,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-4548132393320249404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5137993419226399098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0cd2be3502a845cb97ba661c2dfa221, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  yRotation: 90
+  reticlePrefab: {fileID: 8828706749674558082, guid: 2f1079bfbcf414a68925cbb5b1900c2e,
+    type: 3}
+  targeting: 0
 --- !u!1 &5209859273835186108
 GameObject:
   m_ObjectHideFlags: 0

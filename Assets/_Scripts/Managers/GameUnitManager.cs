@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class GameUnitManager : Singleton<GameUnitManager>
 {
@@ -64,7 +65,7 @@ public class GameUnitManager : Singleton<GameUnitManager>
         {
             gameUnits.Remove((rank, file));
         }
-        Destroy(unit);
+        // Destroy(unit); Destroy now handled by Particle System
     }
 
     public bool HasEnemies()
@@ -117,5 +118,20 @@ public class GameUnitManager : Singleton<GameUnitManager>
         {
             Debug.LogError("Unit not found at position: " + currentRank + ", " + currentFile);
         }
+    }
+
+    internal void damageUnitOnCoords(int damageAmount, int hitRank, int hitFile)
+    {
+        GameObject target = IsOccupied(hitRank, hitFile);
+        
+        if(target != null)
+        {
+            Debug.Log("Hit on " + target.ToString() + " at " + hitRank + ", " + hitFile);
+            target.gameObject.GetComponent<EnemyBehaviour>().damage(damageAmount);
+        } else
+        {
+            Debug.LogError("Target not found at  " + hitRank + ", " + hitFile);
+        }
+         
     }
 }
