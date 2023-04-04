@@ -15,6 +15,9 @@ public class GameUnitManager : Singleton<GameUnitManager>
     [HideInInspector]
     public List<GameObject> allUnits = new List<GameObject>();
 
+    [SerializeField]
+    private GameObject enemyQueen;
+
     // Import
     private float scalingFactor;
     
@@ -107,7 +110,9 @@ public class GameUnitManager : Singleton<GameUnitManager>
             if ( IsOccupied(newRank, newFile) != null ) // if Object on Target
             {
                 // TODO: What do when something there where you wanna go
+                
                 Debug.LogError("Field occupied by " + IsOccupied(newRank, newFile) + " when: " + unit + " tried to go to " + currentRank + ", " + currentFile);
+                return;
             }
 
             gameUnits.Remove((currentRank, currentFile));
@@ -133,5 +138,14 @@ public class GameUnitManager : Singleton<GameUnitManager>
             Debug.LogError("Target not found at  " + hitRank + ", " + hitFile);
         }
          
+    }
+
+    internal void Promote(GameObject toPromote, int item1, int item2)
+    {
+        RemoveUnit(toPromote, item1, item2);
+        Destroy(toPromote);
+        GameObject promotedQueen = Instantiate(enemyQueen, new Vector3((item2 - 1) * scalingFactor, 0, (item1) * scalingFactor), Quaternion.Euler(-90, 0, 0));
+        Debug.Log("Spawn Queen on " + item1 + "," +  item2);
+        AddUnit(promotedQueen, item1, item2);
     }
 }

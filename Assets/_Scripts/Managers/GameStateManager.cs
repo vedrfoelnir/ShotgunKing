@@ -19,7 +19,7 @@ public class GameStateManager : Singleton<GameStateManager>
     private int currentLevelIndex = 0;
     private static readonly List<string> Levels = new List<string> {
         "2p1p1p/8/8/8/8/8/8/8/",
-        "8/4pprr/8/8/8/8/8/8/",
+        "8/4ppnr/8/8/8/8/8/8/",
         "rnbqqbnr/pppppppp/8/8/8/8/8/8/",
         "win"
     };
@@ -157,6 +157,11 @@ public class GameStateManager : Singleton<GameStateManager>
     private void HandleLose()
     {
         PlayerController.Instance.gameObject.GetComponent<Renderer>().material.color = Color.blue;
+    }
+
+    public String getCurrentLevel()
+    {
+        return "Level: " + currentLevelIndex + "\n     with FEN: " + Levels[currentLevelIndex-1];
     }
 
 }

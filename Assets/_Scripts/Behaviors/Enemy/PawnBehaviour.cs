@@ -33,7 +33,11 @@ public class PawnBehaviour : EnemyBehaviour
         
         Debug.Log("Pawn Chosen Move: " + chosenMove);
 
-        // TODO Promotion
+        if(chosenMove.Item1 < 1)
+        {
+            GameUnitManager.Instance.Promote(this.gameObject, chosenMove.Item1, chosenMove.Item2);
+            return (-1, -1);
+        }
 
 
         return chosenMove;

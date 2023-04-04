@@ -32,6 +32,7 @@ public abstract class EnemyBehaviour : MonoBehaviour
 
     private IEnumerator TurnExecution()
     {
+        
         // Moving
         int currentRank;
         int currentFile;
@@ -40,30 +41,36 @@ public abstract class EnemyBehaviour : MonoBehaviour
 
         (currentRank, currentFile) = GameUnitManager.Instance.GetUnitPosition(transform.gameObject);
         (nextRank, nextFile) = ChooseFromPossibleMoves(GetPossibleMoves());
-        
-        Debug.Log("Moving " + ToString() + " to (" + nextRank + ", " + nextFile + ")");
-        GetComponent<Renderer>().material.color = Color.red;
-       
-        GameObject objectOnTarget = GameUnitManager.Instance.IsOccupied(nextRank, nextFile);
-        yield return new WaitUntil(() => (objectOnTarget == null || objectOnTarget != null));
-        if (objectOnTarget == null)
+        if (nextRank < 1 || nextFile <1)
         {
-            GetComponent<Renderer>().material.color = originalColor;
-            GameUnitManager.Instance.UpdateUnit(currentRank, currentFile, nextRank, nextFile);
-            yield return new WaitForSecondsRealtime(0.1f);
-        }
-        if (objectOnTarget != null && objectOnTarget.CompareTag("Player"))
+            Debug.Log("Shit's fucked");
+        } else
         {
-            Debug.Log(gameObject.ToString() + " strikes the player!");
-            PlayerController.Instance.HP--;
-            PlayerController.Instance.gameObject.GetComponent<Renderer>().material.color = Color.red;
-            
-            yield return new WaitForEndOfFrame();
+            Debug.Log("Moving " + ToString() + " to (" + nextRank + ", " + nextFile + ")");
+            GetComponent<Renderer>().material.color = Color.red;
 
-            Debug.Log("Enemy Turn Executed");
-            GameUnitManager.Instance.RemoveUnit(gameObject, currentRank, currentFile);
-            Explode();
+            GameObject objectOnTarget = GameUnitManager.Instance.IsOccupied(nextRank, nextFile);
+            yield return new WaitUntil(() => (objectOnTarget == null || objectOnTarget != null));
+            if (objectOnTarget == null)
+            {
+                GetComponent<Renderer>().material.color = originalColor;
+                GameUnitManager.Instance.UpdateUnit(currentRank, currentFile, nextRank, nextFile);
+                yield return new WaitForSecondsRealtime(0.1f);
+            }
+            if (objectOnTarget != null && objectOnTarget.CompareTag("Player"))
+            {
+                Debug.Log(gameObject.ToString() + " strikes the player!");
+                PlayerController.Instance.HP--;
+                PlayerController.Instance.gameObject.GetComponent<Renderer>().material.color = Color.red;
+
+                yield return new WaitForEndOfFrame();
+
+                Debug.Log("Enemy Turn Executed");
+                GameUnitManager.Instance.RemoveUnit(gameObject, currentRank, currentFile);
+                Explode();
+            }
         }
+        
     }
 
     private void Explode()
